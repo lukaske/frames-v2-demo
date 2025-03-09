@@ -91,9 +91,9 @@ export default function MathFrame() {
     >
       <div className="w-[300px] mx-auto py-2 px-2">
         <h1 style={{color: '#c10f45'}} className="text-2xl font-bold text-center mt-3"><span>Flare Fact Checker</span></h1>
-        <h2 className="text-l font-bold text-center mb-4">for Farcaster Frames</h2>
+        <h2 className="text-l font-bold text-center mb-4">as a Farcaster Frame</h2>
         <hr className="border-t border-gray-300 my-4" />
-        <p className="text-sm">This is a fact checker for Farcaster Frames powered by Flare Network. We are using multiple Trusted Execution Environments and LLMs to fact check and find references to the provided statement.</p>
+        <p className="text-sm">This is a fact checker for Farcaster powered by Flare Network. We are using multiple Trusted Execution Environments and LLMs to fact check and find references to the provided statement.</p>
         <p className="text-sm mt-4">The LLM outputs (opinions) are aggregated and pushed on the Flare Network according to the Conensus Learning mechanism along with their respective hardware attestations.</p>
 
         <hr className="border-t border-gray-300 my-4" />
