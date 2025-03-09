@@ -288,7 +288,7 @@ export default function MathFrame() {
             {/* Verification Results List */}
             {Object.entries(logs).length > 0? (
               <div className="mb-4">
-                <h3 className="font-bold mb-2">Verification Results ({Object.entries(logs).length})</h3>
+                <h3 className="font-bold mb-2">Verification Results: {Object.entries(logs).length}</h3>
                 <div className="space-y-2">
                   {Object.entries(logs).map(([hash, result], index) => {
                     // Determine result type based on correctness score
@@ -297,16 +297,27 @@ export default function MathFrame() {
                     let scoreBadge = "bg-gray-500";
                     
                     if (result.response_json) {
-                      if (result.response_json.correctness_score > 0.6) {
+                      if (result.response_json?.confirming?.length > result.response_json?.refuting?.length) {
                         resultType = "Confirming";
                         resultBg = "bg-green-100 dark:bg-green-900";
                         scoreBadge = "bg-green-500";
-                      } else if (result.response_json.correctness_score < 0.4) {
+                      }  else if (result.response_json?.confirming?.length < result.response_json?.refuting?.length) {
+                        {
                         resultType = "Refuting";
                         resultBg = "bg-red-100 dark:bg-red-900";
                         scoreBadge = "bg-red-500";
                       }
                     }
+                    else 
+                    {
+                      {
+                        resultType = "N/A";
+                        resultBg = "bg-gray-100 dark:bg-gray-900";
+                        scoreBadge = "bg-gray-500";  
+                      }
+
+                    }
+                  }
                     
                     return (
                       <div 
@@ -317,7 +328,7 @@ export default function MathFrame() {
                         <div className="flex justify-between mb-2">
                           <div className="text-xs font-semibold">Verifier: {shortenAddress(hash)}</div>
                           <div className={`text-xs px-2 py-0.5 rounded-full text-white ${scoreBadge}`}>
-                            {resultType}: {result.response_json.confirming.length} vs {result.response_json.refuting.length}
+                            {resultType}: {result.classification == 'NOT_RELEVANT'? 'NO DATA' : <>{result.response_json?.confirming.length} vs {result.response_json?.refuting.length}</>} 
                           </div>
 
                         </div>
@@ -355,19 +366,19 @@ export default function MathFrame() {
                 <>
                                   <div>
                     <h4 className="font-semibold mb-1">Correctness Score</h4>
-                    <p className="text-sm whitespace-pre-wrap">{selectedResult.response_json.correctness_score}</p>
+                    <p className="text-sm whitespace-pre-wrap">{selectedResult.response_json?.correctness_score}</p>
                   </div>
 
                   <div>
                     <h4 className="font-semibold mb-1">Raw Response</h4>
-                    <p className="text-sm whitespace-pre-wrap">{selectedResult.response_json.response}</p>
+                    <p className="text-sm whitespace-pre-wrap">{selectedResult.response_json?.response}</p>
                   </div>
                   
-                  {selectedResult.response_json.confirming?.length > 0 && (
+                  {selectedResult.response_json?.confirming?.length > 0 && (
                     <div>
-                      <h4 className="font-semibold mb-1">Confirming Sources ({selectedResult.response_json.confirming.length})</h4>
+                      <h4 className="font-semibold mb-1">Confirming Sources ({selectedResult.response_json?.confirming.length})</h4>
                       <ul className="list-disc pl-5">
-                        {selectedResult.response_json.confirming.map((source, i) => (
+                        {selectedResult.response_json?.confirming.map((source, i) => (
                           <li key={i} className="text-sm">
                             <a 
                               href={source} 
@@ -383,11 +394,11 @@ export default function MathFrame() {
                     </div>
                   )}
                   
-                  {selectedResult.response_json.refuting?.length > 0 && (
+                  {selectedResult.response_json?.refuting?.length > 0 && (
                     <div>
-                      <h4 className="font-semibold mb-1">Refuting Sources ({selectedResult.response_json.refuting.length})</h4>
+                      <h4 className="font-semibold mb-1">Refuting Sources ({selectedResult.response_json?.refuting.length})</h4>
                       <ul className="list-disc pl-5">
-                        {selectedResult.response_json.refuting.map((source, i) => (
+                        {selectedResult.response_json?.refuting.map((source, i) => (
                           <li key={i} className="text-sm">
                             <a 
                               href={source} 
