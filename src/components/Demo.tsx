@@ -51,6 +51,7 @@ export default function MathFrame() {
   const [selectedResult, setSelectedResult] = useState<VerificationResult | null>(null);
   const [showDetailPanel, setShowDetailPanel] = useState(false);
   const [logs, setLogs] = useState({})
+  const [aggLogs, setAggLogs] = useState()
 
   useEffect(() => {
     console.log('watching evetns')
@@ -77,9 +78,28 @@ export default function MathFrame() {
         });
       },
     })  
+
+    const unwatch2 = watchContractEvent(config, {
+      address: '0xBb242f415dd53e47b0a8c6E71f8D1A0A32ce4F90',
+      abi: contractABI.abi,
+      eventName: 'AggregateResultSubmitted',
+      onLogs(logs) {
+        console.log('New agg. logs!', logs);
+        logs.forEach((log) => {
+          const logRequestId = parseInt(log.args.requestId.toString());
+          if (logRequestId === currentRequestId) {
+            console.log('found a match!')
+            setAggLogs(JSON.parse(log.args.result))
+          }
+        });
+      },
+    })  
+
     return () => {
       unwatch();
+      unwatch2();
       setLogs({})
+      setAggLogs(null)
     };
   }, [currentRequestId])
 
@@ -343,7 +363,7 @@ export default function MathFrame() {
             ): currentRequestId? "Awaiting verifications, please wait..." : ""}
             
             {/* Share Button */}
-            {currentRequestId && logs.length > 0 && (
+            {currentRequestId && (
               <Button 
                 onClick={shareResult}
                 className="w-full mt-3"
@@ -415,6 +435,8 @@ export default function MathFrame() {
                   )}
                 </>
               )}
+
+              {aggLogs && 'hello'}
               
               <Button 
                 onClick={closeResultDetails}
