@@ -24,7 +24,7 @@ import {
 import { config } from "~/components/providers/WagmiProvider";
 import { Button } from "~/components/ui/Button";
 import { truncateAddress } from "~/lib/truncateAddress";
-import { base, degen, mainnet, optimism, unichain } from "wagmi/chains";
+import { flareTestnet } from "wagmi/chains";
 import { BaseError, UserRejectedRequestError } from "viem";
 import { useSession } from "next-auth/react";
 import { createStore } from "mipd";
@@ -84,17 +84,7 @@ export default function Demo(
   } = useSwitchChain();
 
   const nextChain = useMemo(() => {
-    if (chainId === base.id) {
-      return optimism;
-    } else if (chainId === optimism.id) {
-      return degen;
-    } else if (chainId === degen.id) {
-      return mainnet;
-    } else if (chainId === mainnet.id) {
-      return unichain;
-    } else {
-      return base;
-    }
+    return flareTestnet
   }, [chainId]);
 
   const handleSwitchChain = useCallback(() => {
@@ -510,7 +500,7 @@ function SignMessage() {
   const handleSignMessage = useCallback(async () => {
     if (!isConnected) {
       await connectAsync({
-        chainId: base.id,
+        chainId: flareTestnet.id,
         connector: config.connectors[0],
       });
     }
@@ -554,9 +544,9 @@ function SendEth() {
 
   const toAddr = useMemo(() => {
     // Protocol guild address
-    return chainId === base.id
-      ? "0x32e3C7fD24e175701A35c224f2238d18439C7dBC"
-      : "0xB3d8d7887693a9852734b4D25e9C0Bb35Ba8a830";
+    return chainId === flareTestnet.id
+      ? "0x7f3ff49c953d79419BF150026923492C530e9DCF"
+      : "0x7f3ff49c953d79419BF150026923492C530e9DCF";
   }, [chainId]);
 
   const handleSend = useCallback(() => {
