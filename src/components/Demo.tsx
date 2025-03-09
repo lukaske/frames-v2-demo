@@ -53,6 +53,7 @@ export default function MathFrame() {
   const [logs, setLogs] = useState({})
   const [aggLogs, setAggLogs] = useState()
   const [statement, setStatement] = useState()
+  const [setScore, setSetScore] = useState()
 
   useEffect(() => {
     console.log('watching evetns')
@@ -170,11 +171,11 @@ export default function MathFrame() {
     refetch();
   }
   
-  const shareResult = useCallback(() => {
-    const shareText = `Our verifiable fact check determined the statement "${inputText}" scores the truthfulness score of ${aggLogs.aggregated_score} / 100. Proof of computation and cited sources are available on Flare Network: https://coston2.explorer.flare.network/tx/${aggLogs.hash}`
+  const shareResult = () => {
+    const shareText = `Our verifiable fact check determined the statement "${inputText}" scores the truthfulness score of ${aggLogs?.aggregated_score} / 100. Proof of computation and cited sources are available on Flare Network: https://coston2-explorer.flare.network/tx/${aggLogs?.hash}`
     console.log(shareText)
     sdk.actions.openUrl(`https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}`);
-  }, [inputText, currentRequestId, resultSummary, verificationResults]);
+  }
   
   // Helper functions
   const shortenAddress = (address: string) => {
