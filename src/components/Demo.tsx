@@ -52,6 +52,7 @@ export default function MathFrame() {
   const [showDetailPanel, setShowDetailPanel] = useState(false);
   const [logs, setLogs] = useState({})
   const [aggLogs, setAggLogs] = useState()
+  const [statement, setStatement] = useState()
 
   useEffect(() => {
     console.log('watching evetns')
@@ -89,7 +90,9 @@ export default function MathFrame() {
           const logRequestId = parseInt(log.args.requestId.toString());
           if (logRequestId === currentRequestId) {
             console.log('found a match!')
-            setAggLogs(JSON.parse(log.args.result))
+            let parsed = JSON.parse(log.args.aggregateResult)
+            parsed['hash'] = log.transactionHash
+            setAggLogs(parsed)
           }
         });
       },
@@ -168,18 +171,8 @@ export default function MathFrame() {
   }
   
   const shareResult = useCallback(() => {
-    const shareText = `Statement: ${inputText}\nFact check ID: ${currentRequestId}\n${
-      resultSummary.confirming > 0 ? `✓ Confirming: ${resultSummary.confirming}` : ''
-    }${
-      resultSummary.refuting > 0 ? `\n✗ Refuting: ${resultSummary.refuting}` : ''
-    }${
-      resultSummary.neutral > 0 ? `\n• Neutral: ${resultSummary.neutral}` : ''
-    }${
-      verificationResults.length > 0 && verificationResults[0].parsedResult 
-        ? `\n\n${verificationResults[0].parsedResult.response}` 
-        : ''
-    }`;
-    
+    const shareText = `Our verifiable fact check determined the statement "${inputText}" scores the truthfulness score of ${aggLogs.aggregated_score} / 100. Proof of computation and cited sources are available on Flare Network: https://coston2.explorer.flare.network/tx/${aggLogs.hash}`
+    console.log(shareText)
     sdk.actions.openUrl(`https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}`);
   }, [inputText, currentRequestId, resultSummary, verificationResults]);
   
@@ -361,9 +354,63 @@ export default function MathFrame() {
                 </div>
               </div>
             ): currentRequestId? "Awaiting verifications, please wait..." : ""}
+            <br></br>
+              {aggLogs? (
+              <div className="mb-4">
+                <h3 className="font-bold mb-2">Final aggregation result</h3>
+                <div className="space-y-2">
+                  {Object.entries({aggLogs}).map(([hash, result], index) => {
+                    // Determine result type based on correctness score
+                    let resultType = "Neutral";
+                    let resultBg = "bg-gray-100 dark:bg-gray-800";
+                    let scoreBadge = "bg-gray-500";
+                    
+                    if (result) {
+                      if (result.aggregated_score > 50) {
+                        resultType = "Confirmed";
+                        resultBg = "bg-green-100 dark:bg-green-900";
+                        scoreBadge = "bg-green-500";
+                      }  else if (result.aggregated_score < 50) {
+                        {
+                        resultType = "Refuted";
+                        resultBg = "bg-red-100 dark:bg-red-900";
+                        scoreBadge = "bg-red-500";
+                      }
+                    }
+                    else 
+                    {
+                      {
+                        resultType = "N/A";
+                        resultBg = "bg-gray-100 dark:bg-gray-900";
+                        scoreBadge = "bg-gray-500";  
+                      }
+
+                    }
+                  }
+                    
+                    return (
+                      <div 
+                        key={index} 
+                        className={`p-3 ${resultBg} rounded-lg cursor-pointer hover:opacity-90 transition-opacity`}
+                        onClick={() => openResultDetails(result)}
+                      >
+                        <div className="flex justify-between mb-2">
+                          <div className="text-xs font-semibold">Verifier: {shortenAddress("0xbb242f415dd53e47b0a8c6e71f8d1a0a32ce4f90")}</div>
+                          <div className={`text-xs px-2 py-0.5 rounded-full text-white ${scoreBadge}`}>
+                            Truthfulness: {result.aggregated_score} / 100
+                          </div>
+                          
+                        </div>
+                        Our verifiable fact check determined the statement "{inputText}" as <b>{resultType}</b> based on a truthfulness score of {result.aggregated_score} / 100. Proof of computation is available on Flare Network: <br></br>https://coston2.explorer.flare.network/tx/${aggLogs.hash}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ): currentRequestId? "Awaiting aggregation, please wait..." : ""}
             
             {/* Share Button */}
-            {currentRequestId && (
+            {aggLogs && (
               <Button 
                 onClick={shareResult}
                 className="w-full mt-3"
@@ -436,14 +483,13 @@ export default function MathFrame() {
                 </>
               )}
 
-              {aggLogs && 'hello'}
-              
               <Button 
                 onClick={closeResultDetails}
                 className="w-full mt-4"
               >
                 Back to Results
               </Button>
+              
             </div>
           </div>
         )}
