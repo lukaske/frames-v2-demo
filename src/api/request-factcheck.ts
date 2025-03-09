@@ -1,3 +1,4 @@
+import exp from 'constants';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const config = {
@@ -39,30 +40,10 @@ export default async function handler(req: NextRequest) {
 }
 
 async function interpretExpression(expression: string): Promise<string> {
-  try {
-    // For demonstration, let's use a service like WolframAlpha API
-    // In a real implementation, you'd use your API key
-    const response = await fetch(
-      `https://api.wolframalpha.com/v2/query?input=${encodeURIComponent(expression)}&format=plaintext&output=JSON&appid=YOUR_APP_ID`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to interpret with external service');
-    }
-
-    const data = await response.json();
+    const data = 'sent data: ' + expression;
     
     // Extract the result from Wolfram Alpha response
     // This is a simplified example - actual parsing depends on the API response structure
-    const result = 'hello world!';
+    const result = data;
     return result || 'No result found';
-  } catch (error) {
-    console.error('Error in interpretation service:', error);
-    throw new Error('Failed to process mathematical expression');
-  }
 }
