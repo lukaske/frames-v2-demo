@@ -43,7 +43,7 @@ export default function MathFrame() {
   const [isSDKLoaded, setIsSDKLoaded] = useState(false);
   const [context, setContext] = useState<Context.FrameContext>();
   const [inputText, setInputText] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState("Failed to read Warpcast context in development mode. Enter text manually.");
   
   const [verificationResults, setVerificationResults] = useState<VerificationResult[]>([]);
   const [resultSummary, setResultSummary] = useState<ResultSummary>({ confirming: 0, refuting: 0, neutral: 0 });
@@ -219,8 +219,8 @@ export default function MathFrame() {
             <h1 style={{color: '#c10f45'}} className="text-2xl font-bold text-center mt-3"><span>Flare Fact Checker</span></h1>
             <h2 className="text-l font-bold text-center mb-4">as a Farcaster Frame</h2>
             <hr className="border-t border-gray-300 my-4" />
-            <p className="text-sm">This is a fact checker for Farcaster powered by Flare Network. We are using multiple Trusted Execution Environments and LLMs to fact check and find references to the provided statement.</p>
-            <p className="text-sm mt-4">The LLM outputs (opinions) are aggregated and pushed on the Flare Network according to the Conensus Learning mechanism along with their respective hardware attestations.</p>
+            <p className="text-sm">This is a fact checker for Farcaster powered by Flare Network. We are using multiple Trusted Execution Environments and LLMs to fact check and find references to the provided statement. </p>
+            <p className="text-sm mt-4">The LLM outputs (opinions) are aggregated and pushed to Flare Network. We currently operate only on COVID-19 scienfitic articles dataset. Questions unrelated to our dataset might produce unsatisfactory results.</p>
             <hr className="border-t border-gray-300 my-4" />
             <div className="mb-4">
               <Label 
