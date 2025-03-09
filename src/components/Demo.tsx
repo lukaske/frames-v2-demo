@@ -233,7 +233,7 @@ export default function MathFrame() {
                 id="statement-input"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder="e.g., grass is usually blue"
+                placeholder="e.g., Covid-19 is a bacterial infection"
                 className="mb-2"
               />
               {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
