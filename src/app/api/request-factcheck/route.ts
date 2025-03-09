@@ -95,7 +95,7 @@ async function callContractSubmitRequest(text: string): Promise<string> {
     // Wait for the transaction to be mined
     const receipt = await publicClient.waitForTransactionReceipt({ 
       hash,
-      confirmations: 1 // Wait for 1 confirmation
+      confirmations: 0 // Wait for 1 confirmation
     });
     
     // Return the transaction result
