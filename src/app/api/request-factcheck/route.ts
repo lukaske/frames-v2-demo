@@ -4,7 +4,6 @@ import {
   createWalletClient,
   http, 
   getContract,
-  parseGwei,
 } from 'viem';
 import { flareTestnet } from 'viem/chains';
 import { privateKeyToAccount } from 'viem/accounts';
