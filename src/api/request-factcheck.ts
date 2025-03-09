@@ -59,27 +59,10 @@ async function interpretExpression(expression: string): Promise<string> {
     
     // Extract the result from Wolfram Alpha response
     // This is a simplified example - actual parsing depends on the API response structure
-    const result = extractResultFromWolframResponse(data);
+    const result = 'hello world!';
     return result || 'No result found';
   } catch (error) {
     console.error('Error in interpretation service:', error);
     throw new Error('Failed to process mathematical expression');
-  }
-}
-
-function extractResultFromWolframResponse(data: any): string {
-  // This is a placeholder function - you would need to parse the actual Wolfram Alpha response
-  // based on their API documentation
-  try {
-    // Example extraction logic:
-    if (data.queryresult?.pods) {
-      const resultPod = data.queryresult.pods.find((pod: any) => pod.id === 'Result');
-      if (resultPod && resultPod.subpods && resultPod.subpods[0]) {
-        return resultPod.subpods[0].plaintext;
-      }
-    }
-    return "Could not extract result from response";
-  } catch (e) {
-    return "Error parsing response";
   }
 }
