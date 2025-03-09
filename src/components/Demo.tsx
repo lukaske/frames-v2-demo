@@ -36,7 +36,7 @@ export default function MathFrame() {
   const { data, refetch, isFetching } = useQuery({
     queryKey: ['factcheck'],
     queryFn: async () => {
-      const response = await fetch("http://localhost:3000/api/request-factcheck", {
+      const response = await fetch("/api/request-factcheck", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
